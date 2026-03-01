@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DoggyTracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="home" class="page active">
+      <h1>Dog Care Tracker</h1>
+      <p class="subtitle">
+        Log care tasks so everyone in the family stays updated.
+      </p>
+
+      <div class="status-card" id="latest-activity">
+        <h2>Latest Activity</h2>
+        <p>No tasks logged yet.</p>
+      </div>
+
+      <button class="big-button" onclick="showPage('log')">Log Task</button>
+    </div>
+
+    <div id="log" class="page">
+      <h1>Log Task</h1>
+      <div class="form-group">
+        <label>Choose Task</label>
+        <div class="task-buttons" id="taskButtons">
+          <button
+            type="button"
+            class="task-button selected"
+            data-task="Feeding"
+          >
+            Feeding
+          </button>
+          <button type="button" class="task-button" data-task="Medication">
+            Medication
+          </button>
+          <button type="button" class="task-button" data-task="Walk">
+            Walk
+          </button>
+          <button type="button" class="task-button" data-task="Grooming">
+            Grooming
+          </button>
+        </div>
+
+        <label for="taskPerson">Completed by</label>
+        <input type="text" id="taskPerson" placeholder="Enter name" />
+
+        <label for="taskTime">Time (optional)</label>
+        <input type="time" id="taskTime" />
+
+        <label for="taskNote">Optional note</label>
+        <textarea
+          id="taskNote"
+          placeholder="Enter any additional notes"
+        ></textarea>
+      </div>
+      <button class="big-button" onclick="saveTask()">Log Task</button>
+    </div>
+
+    <div id="view" class="page">
+      <h1>View Logs</h1>
+      <div id="logList"></div>
+    </div>
+
+    <nav>
+      <span onclick="showPage('home')">Home</span>
+      <span onclick="showPage('log')">Log Task</span>
+      <span onclick="showPage('view')">View Logs</span>
+    </nav>
+
+    <script src="script.js"></script>
+  </body>
+</html>

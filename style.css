@@ -1,0 +1,202 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f4eb;
+  color: #4a4238;
+  text-align: center;
+}
+
+h1 {
+  font-size: 34px;
+  font-weight: bold;
+  color: #698474;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  margin: 0 auto 20px;
+  width: 90%;
+  max-width: 600px;
+  line-height: 1.4;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+nav span {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+nav span:hover {
+  color: #698474;
+}
+
+.page {
+  display: none;
+  padding: 20px;
+  padding-bottom: 100px;
+}
+
+.active {
+  display: block;
+}
+
+.big-button {
+  background-color: #8eb69b;
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  font-size: 22px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(142, 182, 155, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.big-button:hover {
+  transform: scale(1.02);
+}
+
+input,
+select,
+textarea {
+  background-color: #ffffff;
+  border: 1px solid #e0dcd3;
+  border-radius: 12px;
+  padding: 14px;
+  width: 100%;
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #4a4238;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-sizing: border-box;
+}
+
+.log-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px auto;
+  width: 90%;
+  max-width: 500px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-left: 5px solid #8eb69b;
+}
+
+.status-card {
+  width: 90%;
+  max-width: 600px;
+  margin: 15px auto 5px;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: left;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-left: 6px solid #8eb69b;
+}
+
+.status-card h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #698474;
+}
+
+.status-card p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.form-group {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 19px;
+  color: #698474;
+}
+
+.task-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.task-button {
+  border: 2px solid #8eb69b;
+  background-color: #fff;
+  color: #4a4238;
+  border-radius: 14px;
+  padding: 14px 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.task-button.selected {
+  background-color: #8eb69b;
+  color: #fff;
+}
+
+#logList:empty::before {
+  content: "No tasks logged yet.";
+  display: block;
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 30px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+  }
+
+  .task-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  nav span {
+    font-size: 16px;
+  }
+}
