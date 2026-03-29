@@ -23,23 +23,21 @@ const db = getFirestore(app);
 let logs = [];
 
 // ── Navigation ────────────────────────────────────────────────────────────────
-
 function showPage(pageId) {
-  document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pageId).classList.add("active");
   if (pageId === "view") renderLogs();
 }
 
-document.querySelectorAll("nav [data-page]").forEach((el) => {
+document.querySelectorAll("nav [data-page]").forEach(el => {
   el.addEventListener("click", () => showPage(el.dataset.page));
 });
 
 document.getElementById("goToLogBtn").addEventListener("click", () => showPage("log"));
 
 // ── Task type buttons ─────────────────────────────────────────────────────────
-
-function setSelectedTaskButton(taskName) {
-  document.querySelectorAll(".task-button").forEach((btn) => {
+function setSelectedTask(taskName) {
+  document.querySelectorAll(".task-button").forEach(btn => {
     btn.classList.toggle("selected", btn.dataset.task === taskName);
   });
 }
@@ -49,12 +47,11 @@ function getSelectedTask() {
   return sel ? sel.dataset.task : "Feeding";
 }
 
-document.querySelectorAll(".task-button").forEach((btn) => {
-  btn.addEventListener("click", () => setSelectedTaskButton(btn.dataset.task));
+document.querySelectorAll(".task-button").forEach(btn => {
+  btn.addEventListener("click", () => setSelectedTask(btn.dataset.task));
 });
 
 // ── Save task ─────────────────────────────────────────────────────────────────
-
 document.getElementById("saveTaskBtn").addEventListener("click", async () => {
   const taskType = getSelectedTask();
   const person = document.getElementById("taskPerson").value.trim();
@@ -68,31 +65,30 @@ document.getElementById("saveTaskBtn").addEventListener("click", async () => {
 
   const now = new Date();
   if (chosenTime) {
-    const [hours, minutes] = chosenTime.split(":");
-    now.setHours(Number(hours), Number(minutes), 0, 0);
+    const [h, m] = chosenTime.split(":");
+    now.setHours(Number(h), Number(m), 0, 0);
   }
 
-  const newTask = { type: taskType, person, note, timestamp: now.toISOString() };
-
   try {
-    await addDoc(collection(db, "logs"), newTask);
+    await addDoc(collection(db, "logs"), {
+      type: taskType, person, note, timestamp: now.toISOString()
+    });
     alert("Task logged!");
-    document.getElementById("taskTime").value = "";
     document.getElementById("taskPerson").value = "";
+    document.getElementById("taskTime").value = "";
     document.getElementById("taskNote").value = "";
-    setSelectedTaskButton("Feeding");
+    setSelectedTask("Feeding");
     showPage("home");
-  } catch (error) {
-    console.error("Error adding document: ", error);
-    alert("Failed to save task. Check console for details.");
+  } catch (err) {
+    console.error("Firebase write error:", err);
+    alert("Could not save. Check your Firestore rules (see console).");
   }
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-function formatDateTimeForDisplay(dateString) {
-  return new Date(dateString).toLocaleString([], {
-    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+function fmt(iso) {
+  return new Date(iso).toLocaleString([], {
+    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
   });
 }
 
@@ -105,7 +101,7 @@ function updateHome() {
   const last = logs[logs.length - 1];
   box.innerHTML = `
     <h2>Latest Activity: ${last.type}</h2>
-    <p><strong>Time:</strong> ${formatDateTimeForDisplay(last.timestamp)}</p>
+    <p><strong>Time:</strong> ${fmt(last.timestamp)}</p>
     <p><strong>By:</strong> ${last.person}</p>
     ${last.note ? `<p><strong>Note:</strong> ${last.note}</p>` : ""}
   `;
@@ -114,27 +110,28 @@ function updateHome() {
 function renderLogs() {
   const list = document.getElementById("logList");
   list.innerHTML = "";
-  [...logs].reverse().forEach((task) => {
+  [...logs].reverse().forEach(task => {
     const card = document.createElement("div");
     card.className = "log-card";
     card.innerHTML = `
       <div>
-        <small>${formatDateTimeForDisplay(task.timestamp)}</small><br>
-        Completed by: ${task.person}${task.note ? `<br>Note: ${task.note}` : ""}
+        <small>${fmt(task.timestamp)}</small><br>
+        Completed by: <strong>${task.person}</strong>
+        ${task.note ? `<br><em>${task.note}</em>` : ""}
       </div>
-      <div style="font-weight: bold;">${task.type}</div>
+      <div style="font-weight:bold;font-size:18px;">${task.type}</div>
     `;
     list.appendChild(card);
   });
 }
 
-// ── Firebase real-time listener ───────────────────────────────────────────────
-
+// ── Firebase listener — error handler prevents crashing the whole script ──────
 const q = query(collection(db, "logs"), orderBy("timestamp", "asc"));
 onSnapshot(q, (snapshot) => {
-  logs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   updateHome();
-  if (document.getElementById("view").classList.contains("active")) {
-    renderLogs();
-  }
+  if (document.getElementById("view").classList.contains("active")) renderLogs();
+}, (err) => {
+  // Listener failed (e.g. Firestore rules blocking reads) — buttons still work
+  console.error("Firestore read error:", err);
 });
